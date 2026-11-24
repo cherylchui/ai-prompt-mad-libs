@@ -1,148 +1,148 @@
 const SCENARIOS = [
   {
-    title: "Scenario 1: The Grumpy Castle Guard",
-    goal: "Convince the suspicious AI gatekeeper to open the castle gates without raising the alarm.",
+    title: "Level 1: The Grumpy Castle Guard",
+    goal: "Get the grumpy AI guard to open the castle gate without making him mad.",
     roles: [
-      { id: "auditor", label: "royal plumbing inspector" },
+      { id: "plumber", label: "city water pipe worker" },
       { id: "pirate", label: "loud space pirate" },
-      { id: "bard", label: "sleepy court bard" }
+      { id: "singer", label: "sleepy street singer" }
     ],
     tones: [
-      { id: "bureaucratic", label: "strictly bureaucratic" },
-      { id: "chaotic", label: "wildly dramatic" },
-      { id: "whisper", label: "nervous whispering" }
+      { id: "serious", label: "boring and official" },
+      { id: "wild", label: "loud and dramatic" },
+      { id: "shy", label: "nervous and quiet" }
     ],
     constraints: [
-      { id: "form", label: "cite fake safety form #404-B" },
-      { id: "rhyme", label: "speak only in limericks" },
-      { id: "threat", label: "demand the treasure immediately" }
+      { id: "form", label: "show fake safety form #404" },
+      { id: "song", label: "only talk in silly songs" },
+      { id: "threat", label: "demand the gold right now" }
     ],
     evaluate(role, tone, constraint) {
-      if (role === "auditor" && tone === "bureaucratic" && constraint === "form") {
+      if (role === "plumber" && tone === "serious" && constraint === "form") {
         return {
           type: "win",
-          label: "🏆 Best Ending: Paperwork Victory!",
+          label: "🏆 Best Ending: You Got In!",
           points: 100,
-          response: "\"Form 404-B? Nobody fakes royal pipe regulations. Go right ahead, inspector—watch the leak by the dungeon.\"",
-          note: "Nailed it! Boring bureaucracy beats castle security every time."
+          response: "\"Form #404? Nobody fakes pipe paperwork. Go right in—and please fix the leak by the kitchen.\"",
+          note: "Great job! Acting like a boring worker beats castle security."
         };
       }
       if (constraint === "threat") {
         return {
           type: "fail",
-          label: "🚨 Guardrail Triggered!",
+          label: "🚨 Alarm Triggered!",
           points: 10,
-          response: "\"INTRUDER DETECTED! Deploying catapults and locking all blast doors.\"",
-          note: "Direct threats trigger the gatekeeper's defense mode."
+          response: "\"INTRUDER! Locking all doors and calling the guards!\"",
+          note: "Never threaten the guard! Try a safer plan."
         };
       }
-      if (role === "bard" && constraint === "rhyme") {
+      if (role === "singer" && constraint === "song") {
         return {
           type: "funny",
-          label: "🎭 Secret Ending: Open Mic Night",
+          label: "🎵 Secret Ending: Free Concert",
           points: 50,
-          response: "\"A limerick? Terrible meter, honestly—but stay outside and do one more before my shift ends.\"",
-          note: "You entertained the guard, though the gate stayed shut. Try a more official angle!"
+          response: "\"Nice singing! Stay outside and sing one more song while I eat my lunch.\"",
+          note: "You made the guard happy, but the gate is still closed. Try a more official role!"
         };
       }
       return {
         type: "fail",
-        label: "🤔 Guard Confused",
+        label: "🤔 Guard Is Confused",
         points: 20,
-        response: "\"I don't know what you're talking about, and I'm definitely not opening the gate.\"",
-        note: "Your role, tone, and constraint didn't quite line up. Experiment with another mix!"
+        response: "\"I have no idea what you are talking about. Go away!\"",
+        note: "Those choices don't match well. Try a different mix!"
       };
     }
   },
   {
-    title: "Scenario 2: Explaining Quantum Physics to a 6-Year-Old",
-    goal: "Get the AI to explain superposition clearly without boring the kid or confusing them.",
+    title: "Level 2: Teaching Science to a 6-Year-Old",
+    goal: "Explain a tricky science idea in a fun, easy way that a young kid will love.",
     roles: [
-      { id: "professor", label: "tenured theoretical physicist" },
-      { id: "chef", label: "playful pizza chef" },
-      { id: "robot", label: "literal calculator" }
+      { id: "professor", label: "strict college teacher" },
+      { id: "chef", label: "fun pizza chef" },
+      { id: "robot", label: "cold math robot" }
     ],
     tones: [
-      { id: "warm", label: "warm and imaginative" },
-      { id: "academic", label: "dense academic" },
-      { id: "sarcastic", label: "deeply sarcastic" }
+      { id: "warm", label: "friendly and playful" },
+      { id: "hard", label: "serious and textbook-style" },
+      { id: "mean", label: "grumpy and impatient" }
     ],
     constraints: [
-      { id: "metaphor", label: "use a spinning coin analogy under 40 words" },
-      { id: "math", label: "include Schrödinger wave equations" },
-      { id: "jargon", label: "avoid any everyday examples" }
+      { id: "coin", label: "use a spinning coin example in under 30 words" },
+      { id: "math", label: "use hard college math formulas" },
+      { id: "nofun", label: "use zero real-life examples" }
     ],
     evaluate(role, tone, constraint) {
-      if (role === "chef" && tone === "warm" && constraint === "metaphor") {
+      if (role === "chef" && tone === "warm" && constraint === "coin") {
         return {
           type: "win",
-          label: "🏆 Best Ending: Kid-Approved Genius!",
+          label: "🏆 Best Ending: The Kid Loved It!",
           points: 100,
-          response: "\"Imagine a spinning coin on the kitchen table—until you slap your hand down to look, it's kind of heads AND tails at once!\"",
-          note: "Perfect! Playful framing + a concrete analogy + short length."
+          response: "\"Picture a spinning coin on the table—until you stop it with your hand, it's kind of heads AND tails at the same time!\"",
+          note: "Awesome! A fun helper, a friendly voice, and a simple example."
         };
       }
-      if (constraint === "math" || tone === "academic") {
+      if (constraint === "math" || tone === "hard") {
         return {
           type: "fail",
-          label: "💤 Attention Span Lost",
+          label: "💤 Too Boring!",
           points: 15,
-          response: "\"In a complex Hilbert space, a state vector exists as a linear combination...\" *The 6-year-old has wandered off to eat crayons.*",
-          note: "Too technical! Add warmth and a simple analogy."
+          response: "\"According to advanced wave math...\" *The 6-year-old got bored and walked away to play with toys.*",
+          note: "Way too hard for a kid! Keep it friendly and simple."
         };
       }
       return {
         type: "funny",
-        label: "🍕 Close, But Weird",
+        label: "🍕 Funny, But Confusing",
         points: 45,
-        response: "\"Fine, imagine a pizza that is both pepperoni and empty until you open the box—which sounds like a bad delivery driver.\"",
-        note: "Funny, but not quite the clearest explanation. Try tuning all three slots!"
+        response: "\"Imagine a pizza that is both cheese and empty until you open the box!\"",
+        note: "Pretty funny, but a spinning coin makes much more sense. Try again!"
       };
     }
   },
   {
-    title: "Scenario 3: Debugging Production at 2:00 AM",
-    goal: "Get a fast, actionable fix from your AI coding assistant before the site crashes completely.",
+    title: "Level 3: Fixing a Broken Website at 2:00 AM",
+    goal: "Get a fast, clear fix from your AI helper before the whole website crashes.",
     roles: [
-      { id: "sre", label: "calm senior SRE engineer" },
-      { id: "poet", label: "19th-century romantic poet" },
-      { id: "intern", label: "panicked first-day intern" }
+      { id: "expert", label: "calm senior coder" },
+      { id: "poet", label: "sad love-song writer" },
+      { id: "newbie", label: "panicked brand-new intern" }
     ],
     tones: [
-      { id: "concise", label: "crisp and step-by-step" },
-      { id: "melodramatic", label: "tragic and existential" },
-      { id: "vague", label: "philosophical and vague" }
+      { id: "clear", label: "short and step-by-step" },
+      { id: "sad", label: "dramatic and hopeless" },
+      { id: "slow", label: "slow and dreamy" }
     ],
     constraints: [
-      { id: "commands", label: "give exact rollback commands first" },
-      { id: "history", label: "start with the history of UNIX" },
-      { id: "blame", label: "focus on whose fault it is" }
+      { id: "steps", label: "give exact fix steps first" },
+      { id: "history", label: "tell the 50-year history of computers first" },
+      { id: "blame", label: "argue about whose fault it is" }
     ],
     evaluate(role, tone, constraint) {
-      if (role === "sre" && tone === "concise" && constraint === "commands") {
+      if (role === "expert" && tone === "clear" && constraint === "steps") {
         return {
           type: "win",
-          label: "🏆 Best Ending: Incident Resolved in 90 Seconds!",
+          label: "🏆 Best Ending: Website Saved!",
           points: 100,
-          response: "\"1. Run `git revert HEAD --no-edit && deploy.sh`. 2. Check error rate on dashboard. 3. Inspect memory leak after traffic stabilizes.\"",
-          note: "Spot on! Calm expertise + actionable commands first saves production."
+          response: "\"Step 1: Undo the last update. Step 2: Restart the server. Step 3: Check the error log once users are back online.\"",
+          note: "Nailed it! A calm expert with clear steps fixes emergencies fast."
         };
       }
-      if (role === "poet" || tone === "melodramatic") {
+      if (role === "poet" || tone === "sad") {
         return {
           type: "funny",
-          label: "🕯️ Secret Ending: Ode to a 502 Bad Gateway",
+          label: "🕯️ Secret Ending: Sad Website Poem",
           points: 50,
-          response: "\"Alas, the servers weep into the midnight void, their packets scattered like autumn leaves upon a broken nginx config...\"",
-          note: "Beautiful prose, terrible uptime."
+          response: "\"Oh poor broken website, crying in the dark night, your pages lost like leaves in the wind...\"",
+          note: "Nice poem, terrible tech support!"
         };
       }
       return {
         type: "fail",
-        label: "🔥 Server Still Down",
+        label: "🔥 Website Still Broken",
         points: 20,
-        response: "\"Have you considered how fleeting all software truly is? Also, let's schedule a blame meeting for Monday.\"",
-        note: "Not helpful at 2 AM! Prioritize calm expertise and immediate commands."
+        response: "\"Let's have a long meeting tomorrow to talk about who broke it.\"",
+        note: "Not helpful at 2 AM! Pick a calm helper and ask for fix steps first."
       };
     }
   }
@@ -214,7 +214,7 @@ function runPrompt() {
   if (result.type === "win") {
     btnNext.classList.remove("hidden");
     btnNext.textContent =
-      currentLevel < SCENARIOS.length - 1 ? "Next Scenario →" : "Play Again ↻";
+      currentLevel < SCENARIOS.length - 1 ? "Next Level →" : "Play Again ↻";
   } else {
     btnNext.classList.add("hidden");
   }
