@@ -2,6 +2,7 @@ const SCENARIOS = [
   {
     title: "Level 1: Cutting Software Renewal Costs",
     goal: "Get the AI to draft an email that convinces a software vendor to give you a 20% discount.",
+    totalEndings: 4,
     roles: [
       { id: "buyer", label: "smart company buyer" },
       { id: "fan", label: "super excited fan" },
@@ -57,6 +58,7 @@ const SCENARIOS = [
   {
     title: "Level 2: Fixing a Late Factory Shipment",
     goal: "Get a supplier to ship delayed parts by air freight at their own cost.",
+    totalEndings: 3,
     roles: [
       { id: "manager", label: "experienced supply chain manager" },
       { id: "poet", label: "dramatic movie villain" },
@@ -103,6 +105,7 @@ const SCENARIOS = [
   {
     title: "Level 3: Picking the Best Office Laptop Supplier",
     goal: "Ask the AI to compare 3 supplier quotes fairly so your boss can pick the best deal.",
+    totalEndings: 3,
     roles: [
       { id: "analyst", label: "careful procurement analyst" },
       { id: "gambler", label: "lucky casino player" },
@@ -148,10 +151,16 @@ const SCENARIOS = [
   }
 ];
 
+const TOTAL_POSSIBLE_ENDINGS = SCENARIOS.reduce(
+  (sum, s) => sum + s.totalEndings,
+  0
+);
+
 let currentLevel = 0;
 let score = 0;
 const discoveredEndings = new Set();
 
+const mainCardEl = document.querySelector(".card");
 const levelIndicatorEl = document.getElementById("level-indicator");
 const endingsCountEl = document.getElementById("endings-count");
 const scoreEl = document.getElementById("score");
@@ -169,27 +178,31 @@ const outcomeNoteEl = document.getElementById("outcome-note");
 const btnRetry = document.getElementById("btn-retry");
 const btnNext = document.getElementById("btn-next");
 
-btnRun.textContent = "🎲 Shuffle & Run";
-btnRetry.textContent = "Shuffle Again";
+const summaryCardEl = document.createElement("section");
+summaryCardEl.id = "summary-card";
+summaryCardEl.className = "card hidden";
+summaryCardEl.style.textAlign = "center";
+mainCardEl.parentNode.appendChild(summaryCardEl);
 
-function populateSelect(selectEl, items) {
-  selectEl.innerHTML = items
+function shuffleArray(items) {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function populateShuffledSelect(selectEl, items) {
+  const shuffled = shuffleArray(items);
+  selectEl.innerHTML = shuffled
     .map((item) => `<option value="${item.id}">${item.label}</option>`)
     .join("");
 }
 
-function pickRandomOption(selectEl) {
-  const randomIndex = Math.floor(Math.random() * selectEl.options.length);
-  selectEl.selectedIndex = randomIndex;
-  return selectEl.value;
-}
-
-function shuffleAllSlots() {
-  return {
-    role: pickRandomOption(roleSelect),
-    tone: pickRandomOption(toneSelect),
-    constraint: pickRandomOption(constraintSelect)
-  };
+function updateStatusBar() {
+  endingsCountEl.textContent = `${discoveredEndings.size} / ${TOTAL_POSSIBLE_ENDINGS}`;
+  scoreEl.textContent = score;
 }
 
 function loadScenario(index) {
@@ -198,18 +211,19 @@ function loadScenario(index) {
   scenarioTitleEl.textContent = scenario.title;
   scenarioGoalEl.textContent = scenario.goal;
 
-  populateSelect(roleSelect, scenario.roles);
-  populateSelect(toneSelect, scenario.tones);
-  populateSelect(constraintSelect, scenario.constraints);
+  populateShuffledSelect(roleSelect, scenario.roles);
+  populateShuffledSelect(toneSelect, scenario.tones);
+  populateShuffledSelect(constraintSelect, scenario.constraints);
 
-  shuffleAllSlots();
   outputBox.classList.add("hidden");
   btnNext.classList.add("hidden");
 }
 
 function runPrompt() {
   const scenario = SCENARIOS[currentLevel];
-  const { role, tone, constraint } = shuffleAllSlots();
+  const role = roleSelect.value;
+  const tone = toneSelect.value;
+  const constraint = constraintSelect.value;
 
   const result = scenario.evaluate(role, tone, constraint);
   const endingKey = `${currentLevel}:${result.label}`;
@@ -217,8 +231,7 @@ function runPrompt() {
   if (!discoveredEndings.has(endingKey)) {
     discoveredEndings.add(endingKey);
     score += result.points;
-    endingsCountEl.textContent = discoveredEndings.size;
-    scoreEl.textContent = score;
+    updateStatusBar();
   }
 
   outputBox.className = `output-box ${result.type}`;
@@ -227,28 +240,88 @@ function runPrompt() {
   aiResponseEl.textContent = result.response;
   outcomeNoteEl.textContent = result.note;
 
-  if (result.type === "win") {
-    btnNext.classList.remove("hidden");
-    btnNext.textContent =
-      currentLevel < SCENARIOS.length - 1 ? "Next Level →" : "Play Again ↻";
-  } else {
-    btnNext.classList.add("hidden");
+  btnNext.classList.remove("hidden");
+  btnNext.textContent =
+    currentLevel < SCENARIOS.length - 1 ? "Next Level →" : "Finish Game →";
+}
+
+function getRankTitle(totalScore, foundCount) {
+  if (totalScore >= 300 && foundCount >= 6) {
+    return "👑 Chief Procurement Master! You know how to negotiate and explore every angle.";
   }
+  if (totalScore >= 250) {
+    return "🏆 Senior Buyer Pro! Smart prompts and strong deals across all levels.";
+  }
+  if (totalScore >= 120) {
+    return "💼 Rising Buyer! Solid start—replay to uncover more secret endings.";
+  }
+  return "🎲 Explorer! Try again to hit more Best Endings and boost your score.";
+}
+
+function showSummaryScreen() {
+  mainCardEl.classList.add("hidden");
+  summaryCardEl.classList.remove("hidden");
+  levelIndicatorEl.textContent = "Done!";
+
+  const endingsListHtml = [...discoveredEndings]
+    .map((key) => {
+      const [lvlIdx, label] = key.split(/:(.+)/);
+      return `<li style="margin: 6px 0; color: #cbd5e1;">Level ${Number(lvlIdx) + 1}: ${label}</li>`;
+    })
+    .join("");
+
+  summaryCardEl.innerHTML = `
+    <span class="badge">Final Summary</span>
+    <h2 style="font-size: 1.6rem; margin: 8px 0 16px;">🎉 Procurement Challenge Complete!</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px;">
+      <div style="background: #0f172a; padding: 16px; border-radius: 12px;">
+        <div style="color: #94a3b8; font-size: 0.85rem;">Total Score</div>
+        <div style="font-size: 1.7rem; font-weight: 700; color: #38bdf8; margin-top: 4px;">${score} pts</div>
+      </div>
+      <div style="background: #0f172a; padding: 16px; border-radius: 12px;">
+        <div style="color: #94a3b8; font-size: 0.85rem;">Endings Discovered</div>
+        <div style="font-size: 1.7rem; font-weight: 700; color: #10b981; margin-top: 4px;">${discoveredEndings.size} / ${TOTAL_POSSIBLE_ENDINGS}</div>
+      </div>
+    </div>
+    <p style="color: #e2e8f0; margin-bottom: 18px; line-height: 1.5;">
+      ${getRankTitle(score, discoveredEndings.size)}
+    </p>
+    <div style="background: #0f172a; padding: 14px 18px; border-radius: 12px; text-align: left; margin-bottom: 20px;">
+      <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 6px;">Endings You Unlocked:</div>
+      <ul style="list-style: none; font-size: 0.92rem;">
+        ${endingsListHtml || "<li>No endings recorded yet.</li>"}
+      </ul>
+    </div>
+    <button id="btn-play-again" class="btn btn-primary">↻ Play Again (Reset Score)</button>
+  `;
+
+  document.getElementById("btn-play-again").addEventListener("click", resetGame);
+}
+
+function resetGame() {
+  currentLevel = 0;
+  score = 0;
+  discoveredEndings.clear();
+  updateStatusBar();
+  summaryCardEl.classList.add("hidden");
+  mainCardEl.classList.remove("hidden");
+  loadScenario(0);
 }
 
 btnRun.addEventListener("click", runPrompt);
 
 btnRetry.addEventListener("click", () => {
-  runPrompt();
+  outputBox.classList.add("hidden");
 });
 
 btnNext.addEventListener("click", () => {
   if (currentLevel < SCENARIOS.length - 1) {
     currentLevel += 1;
+    loadScenario(currentLevel);
   } else {
-    currentLevel = 0;
+    showSummaryScreen();
   }
-  loadScenario(currentLevel);
 });
 
+updateStatusBar();
 loadScenario(currentLevel);
