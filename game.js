@@ -169,10 +169,27 @@ const outcomeNoteEl = document.getElementById("outcome-note");
 const btnRetry = document.getElementById("btn-retry");
 const btnNext = document.getElementById("btn-next");
 
+btnRun.textContent = "🎲 Shuffle & Run";
+btnRetry.textContent = "Shuffle Again";
+
 function populateSelect(selectEl, items) {
   selectEl.innerHTML = items
     .map((item) => `<option value="${item.id}">${item.label}</option>`)
     .join("");
+}
+
+function pickRandomOption(selectEl) {
+  const randomIndex = Math.floor(Math.random() * selectEl.options.length);
+  selectEl.selectedIndex = randomIndex;
+  return selectEl.value;
+}
+
+function shuffleAllSlots() {
+  return {
+    role: pickRandomOption(roleSelect),
+    tone: pickRandomOption(toneSelect),
+    constraint: pickRandomOption(constraintSelect)
+  };
 }
 
 function loadScenario(index) {
@@ -185,15 +202,14 @@ function loadScenario(index) {
   populateSelect(toneSelect, scenario.tones);
   populateSelect(constraintSelect, scenario.constraints);
 
+  shuffleAllSlots();
   outputBox.classList.add("hidden");
   btnNext.classList.add("hidden");
 }
 
 function runPrompt() {
   const scenario = SCENARIOS[currentLevel];
-  const role = roleSelect.value;
-  const tone = toneSelect.value;
-  const constraint = constraintSelect.value;
+  const { role, tone, constraint } = shuffleAllSlots();
 
   const result = scenario.evaluate(role, tone, constraint);
   const endingKey = `${currentLevel}:${result.label}`;
@@ -223,7 +239,7 @@ function runPrompt() {
 btnRun.addEventListener("click", runPrompt);
 
 btnRetry.addEventListener("click", () => {
-  outputBox.classList.add("hidden");
+  runPrompt();
 });
 
 btnNext.addEventListener("click", () => {
