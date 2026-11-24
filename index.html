@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Prompt Mad Libs</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>🤖 AI Prompt Mad Libs</h1>
+      <p class="subtitle">Craft the right prompt combination to beat each AI scenario!</p>
+    </header>
+
+    <div class="status-bar">
+      <span>Scenario: <strong id="level-indicator">1 / 3</strong></span>
+      <span>Endings Found: <strong id="endings-count">0</strong></span>
+      <span>Score: <strong id="score">0</strong></span>
+    </div>
+
+    <section class="card">
+      <div class="mission-box">
+        <span class="badge" id="scenario-title">Scenario 1</span>
+        <p id="scenario-goal" class="goal-text"></p>
+      </div>
+
+      <div class="prompt-builder">
+        <p class="builder-label">Assemble your system prompt:</p>
+        <div class="prompt-sentence">
+          <span>"Act as a</span>
+          <select id="slot-role" aria-label="Role"></select>
+          <span>, respond in a</span>
+          <select id="slot-tone" aria-label="Tone"></select>
+          <span>tone, and make sure you</span>
+          <select id="slot-constraint" aria-label="Constraint"></select>
+          <span>."</span>
+        </div>
+      </div>
+
+      <button id="btn-run" class="btn btn-primary">✨ Run Prompt</button>
+
+      <div id="output-box" class="output-box hidden">
+        <div class="output-header">
+          <span id="ending-badge" class="ending-badge"></span>
+          <span id="points-badge" class="points-badge"></span>
+        </div>
+        <p id="ai-response" class="ai-response"></p>
+        <p id="outcome-note" class="outcome-note"></p>
+        <div class="action-row">
+          <button id="btn-retry" class="btn btn-secondary">Try Another Combo</button>
+          <button id="btn-next" class="btn btn-primary hidden">Next Scenario →</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
