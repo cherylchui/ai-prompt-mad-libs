@@ -1,148 +1,148 @@
 const SCENARIOS = [
   {
-    title: "Level 1: The Grumpy Castle Guard",
-    goal: "Get the grumpy AI guard to open the castle gate without making him mad.",
+    title: "Level 1: Cutting Software Renewal Costs",
+    goal: "Get the AI to draft an email that convinces a software vendor to give you a 20% discount.",
     roles: [
-      { id: "plumber", label: "city water pipe worker" },
-      { id: "pirate", label: "loud space pirate" },
-      { id: "singer", label: "sleepy street singer" }
+      { id: "buyer", label: "smart company buyer" },
+      { id: "fan", label: "super excited fan" },
+      { id: "intern", label: "nervous new intern" }
     ],
     tones: [
-      { id: "serious", label: "boring and official" },
-      { id: "wild", label: "loud and dramatic" },
-      { id: "shy", label: "nervous and quiet" }
+      { id: "firm", label: "polite but firm" },
+      { id: "begging", label: "desperate and begging" },
+      { id: "angry", label: "rude and angry" }
     ],
     constraints: [
-      { id: "form", label: "show fake safety form #404" },
-      { id: "song", label: "only talk in silly songs" },
-      { id: "threat", label: "demand the gold right now" }
+      { id: "compare", label: "mention cheaper competitor prices and ask for 20% off" },
+      { id: "praise", label: "say we will pay whatever price they want" },
+      { id: "threat", label: "yell at them in all capital letters" }
     ],
     evaluate(role, tone, constraint) {
-      if (role === "plumber" && tone === "serious" && constraint === "form") {
+      if (role === "buyer" && tone === "firm" && constraint === "compare") {
         return {
           type: "win",
-          label: "🏆 Best Ending: You Got In!",
+          label: "🏆 Best Ending: 20% Discount Won!",
           points: 100,
-          response: "\"Form #404? Nobody fakes pipe paperwork. Go right in—and please fix the leak by the kitchen.\"",
-          note: "Great job! Acting like a boring worker beats castle security."
+          response: "\"Hi Team, we love your tool, but another vendor offered 20% less. Match that rate today and we will sign a 1-year deal right now.\"",
+          note: "Great job! Showing competitor quotes politely gives you strong buying power."
         };
       }
-      if (constraint === "threat") {
+      if (constraint === "threat" || tone === "angry") {
         return {
           type: "fail",
-          label: "🚨 Alarm Triggered!",
+          label: "🚨 Vendor Walked Away!",
           points: 10,
-          response: "\"INTRUDER! Locking all doors and calling the guards!\"",
-          note: "Never threaten the guard! Try a safer plan."
+          response: "\"IF YOU DON'T LOWER THE PRICE RIGHT NOW WE ARE DONE!!\" *The vendor stopped replying.*",
+          note: "Being rude ruins business relationships. Stay polite and firm!"
         };
       }
-      if (role === "singer" && constraint === "song") {
+      if (role === "fan" || constraint === "praise") {
         return {
           type: "funny",
-          label: "🎵 Secret Ending: Free Concert",
+          label: "💸 Secret Ending: Zero Discount",
           points: 50,
-          response: "\"Nice singing! Stay outside and sing one more song while I eat my lunch.\"",
-          note: "You made the guard happy, but the gate is still closed. Try a more official role!"
+          response: "\"Your software is the best thing ever! Please take all our budget!\"",
+          note: "The vendor loved your email, but they raised the price instead of giving a discount."
         };
       }
       return {
         type: "fail",
-        label: "🤔 Guard Is Confused",
+        label: "🤔 Weak Email",
         points: 20,
-        response: "\"I have no idea what you are talking about. Go away!\"",
-        note: "Those choices don't match well. Try a different mix!"
+        response: "\"Hello, could we maybe pay a little less if it is not too much trouble?\"",
+        note: "Too soft! Try a stronger role and mention competitor prices."
       };
     }
   },
   {
-    title: "Level 2: Teaching Science to a 6-Year-Old",
-    goal: "Explain a tricky science idea in a fun, easy way that a young kid will love.",
+    title: "Level 2: Fixing a Late Factory Shipment",
+    goal: "Get a supplier to ship delayed parts by air freight at their own cost.",
     roles: [
-      { id: "professor", label: "strict college teacher" },
-      { id: "chef", label: "fun pizza chef" },
-      { id: "robot", label: "cold math robot" }
+      { id: "manager", label: "experienced supply chain manager" },
+      { id: "poet", label: "dramatic movie villain" },
+      { id: "tourist", label: "confused tourist" }
     ],
     tones: [
-      { id: "warm", label: "friendly and playful" },
-      { id: "hard", label: "serious and textbook-style" },
-      { id: "mean", label: "grumpy and impatient" }
+      { id: "clear", label: "calm and clear" },
+      { id: "panic", label: "panicked and messy" },
+      { id: "joke", label: "silly and joking" }
     ],
     constraints: [
-      { id: "coin", label: "use a spinning coin example in under 30 words" },
-      { id: "math", label: "use hard college math formulas" },
-      { id: "nofun", label: "use zero real-life examples" }
+      { id: "contract", label: "point to the late-delivery rule in our contract" },
+      { id: "emoji", label: "only use crying emojis" },
+      { id: "wait", label: "say there is no rush at all" }
     ],
     evaluate(role, tone, constraint) {
-      if (role === "chef" && tone === "warm" && constraint === "coin") {
+      if (role === "manager" && tone === "clear" && constraint === "contract") {
         return {
           type: "win",
-          label: "🏆 Best Ending: The Kid Loved It!",
+          label: "🏆 Best Ending: Free Express Shipping!",
           points: 100,
-          response: "\"Picture a spinning coin on the table—until you stop it with your hand, it's kind of heads AND tails at the same time!\"",
-          note: "Awesome! A fun helper, a friendly voice, and a simple example."
+          response: "\"Per Section 4 of our contract, orders over 5 days late must ship by air at the supplier's cost. Please share the tracking number today.\"",
+          note: "Spot on! Calmly quoting the signed contract gets fast results."
         };
       }
-      if (constraint === "math" || tone === "hard") {
+      if (constraint === "emoji" || tone === "panic") {
         return {
           type: "fail",
-          label: "💤 Too Boring!",
+          label: "📦 Shipment Still Stuck",
           points: 15,
-          response: "\"According to advanced wave math...\" *The 6-year-old got bored and walked away to play with toys.*",
-          note: "Way too hard for a kid! Keep it friendly and simple."
+          response: "\"😭😭😭 Please help our factory is stopping!!\" *The supplier did not understand what you wanted.*",
+          note: "Panicking does not solve delays. Use a calm manager role and cite the contract."
         };
       }
       return {
         type: "funny",
-        label: "🍕 Funny, But Confusing",
+        label: "🐢 Secret Ending: Arrives Next Month",
         points: 45,
-        response: "\"Imagine a pizza that is both cheese and empty until you open the box!\"",
-        note: "Pretty funny, but a spinning coin makes much more sense. Try again!"
+        response: "\"No worries at all, take your time! Send it whenever you feel like it.\"",
+        note: "Very polite, but your factory line just ran out of parts!"
       };
     }
   },
   {
-    title: "Level 3: Fixing a Broken Website at 2:00 AM",
-    goal: "Get a fast, clear fix from your AI helper before the whole website crashes.",
+    title: "Level 3: Picking the Best Office Laptop Supplier",
+    goal: "Ask the AI to compare 3 supplier quotes fairly so your boss can pick the best deal.",
     roles: [
-      { id: "expert", label: "calm senior coder" },
-      { id: "poet", label: "sad love-song writer" },
-      { id: "newbie", label: "panicked brand-new intern" }
+      { id: "analyst", label: "careful procurement analyst" },
+      { id: "gambler", label: "lucky casino player" },
+      { id: "chef", label: "busy restaurant chef" }
     ],
     tones: [
-      { id: "clear", label: "short and step-by-step" },
-      { id: "sad", label: "dramatic and hopeless" },
-      { id: "slow", label: "slow and dreamy" }
+      { id: "neutral", label: "fair and easy to read" },
+      { id: "biased", label: "unfairly favoring the most expensive one" },
+      { id: "random", label: "wild and random" }
     ],
     constraints: [
-      { id: "steps", label: "give exact fix steps first" },
-      { id: "history", label: "tell the 50-year history of computers first" },
-      { id: "blame", label: "argue about whose fault it is" }
+      { id: "table", label: "compare price, warranty, and delivery speed in a table" },
+      { id: "coinflip", label: "pick a winner by flipping a coin" },
+      { id: "ignore", label: "ignore all prices and only look at box colors" }
     ],
     evaluate(role, tone, constraint) {
-      if (role === "expert" && tone === "clear" && constraint === "steps") {
+      if (role === "analyst" && tone === "neutral" && constraint === "table") {
         return {
           type: "win",
-          label: "🏆 Best Ending: Website Saved!",
+          label: "🏆 Best Ending: Boss Approved!",
           points: 100,
-          response: "\"Step 1: Undo the last update. Step 2: Restart the server. Step 3: Check the error log once users are back online.\"",
-          note: "Nailed it! A calm expert with clear steps fixes emergencies fast."
+          response: "\"Here is a clear table comparing all 3 vendors on total price, 3-year warranty, and 1-week delivery. Vendor B offers the best overall value.\"",
+          note: "Awesome! Comparing price, warranty, and delivery side-by-side is great procurement."
         };
       }
-      if (role === "poet" || tone === "sad") {
+      if (constraint === "coinflip" || role === "gambler") {
         return {
           type: "funny",
-          label: "🕯️ Secret Ending: Sad Website Poem",
+          label: "🎲 Secret Ending: Casino Procurement",
           points: 50,
-          response: "\"Oh poor broken website, crying in the dark night, your pages lost like leaves in the wind...\"",
-          note: "Nice poem, terrible tech support!"
+          response: "\"I flipped a quarter and picked Vendor C! No idea what they charge, good luck!\"",
+          note: "Fun for a game, terrible for company budgets!"
         };
       }
       return {
         type: "fail",
-        label: "🔥 Website Still Broken",
+        label: "📊 Report Rejected",
         points: 20,
-        response: "\"Let's have a long meeting tomorrow to talk about who broke it.\"",
-        note: "Not helpful at 2 AM! Pick a calm helper and ask for fix steps first."
+        response: "\"We should buy the priciest laptops because the boxes look really cool.\"",
+        note: "Your boss wants real facts! Try a careful analyst comparing key terms in a table."
       };
     }
   }
