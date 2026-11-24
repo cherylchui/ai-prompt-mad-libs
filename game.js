@@ -148,6 +148,100 @@ const SCENARIOS = [
         note: "Your boss wants real facts! Try a careful analyst comparing key terms in a table."
       };
     }
+  },
+  {
+    title: "Level 4: Pushing Back on a Sudden Price Jump",
+    goal: "A supplier just raised prices by 15%. Ask for fair proof and offer a steady order plan.",
+    totalEndings: 3,
+    roles: [
+      { id: "cost_buyer", label: "careful cost buyer" },
+      { id: "puppy", label: "friendly puppy" },
+      { id: "angry_boss", label: "angry boss" }
+    ],
+    tones: [
+      { id: "firm", label: "polite and firm" },
+      { id: "sleepy", label: "super sleepy" },
+      { id: "rude", label: "loud and rude" }
+    ],
+    constraints: [
+      { id: "proof", label: "ask for cost proof and offer a 6-month order plan" },
+      { id: "accept", label: "say yes right away without checking anything" },
+      { id: "caps", label: "yell at them in all capital letters" }
+    ],
+    evaluate(role, tone, constraint) {
+      if (role === "cost_buyer" && tone === "firm" && constraint === "proof") {
+        return {
+          type: "win",
+          label: "🏆 Best Ending: Price Kept Steady!",
+          points: 100,
+          response: "\"Please share what costs went up. If we keep our current price, we can promise steady orders for the next 6 months.\"",
+          note: "Smart move! Asking for real cost reasons and offering steady orders helps hold prices down."
+        };
+      }
+      if (constraint === "accept" || role === "puppy") {
+        return {
+          type: "funny",
+          label: "🐶 Secret Ending: Woof! Budget Gone!",
+          points: 45,
+          response: "\"Woof! Sure, take 15% more money! Tail wag!\"",
+          note: "Cute, but your budget just took a big hit!"
+        };
+      }
+      return {
+        type: "fail",
+        label: "💥 Deal Got Messy",
+        points: 15,
+        response: "\"WHY DID YOU RAISE THE PRICE?! SO UNFAIR!!\"",
+        note: "Yelling rarely lowers prices. Stay polite and firm, and ask for clear facts."
+      };
+    }
+  },
+  {
+    title: "Level 5: Checking a Brand-New Supplier",
+    goal: "Before paying a new factory, run smart safety checks so you don't get scammed.",
+    totalEndings: 3,
+    roles: [
+      { id: "risk_checker", label: "smart risk checker" },
+      { id: "kid", label: "trusting young kid" },
+      { id: "baker", label: "busy cupcake baker" }
+    ],
+    tones: [
+      { id: "clear", label: "clear and helpful" },
+      { id: "scary", label: "scary and mean" },
+      { id: "silly", label: "silly and loud" }
+    ],
+    constraints: [
+      { id: "checks", label: "ask for business license, sample check, and safe payment terms" },
+      { id: "upfront", label: "send 100% of the money right now" },
+      { id: "color", label: "only ask what their favorite color is" }
+    ],
+    evaluate(role, tone, constraint) {
+      if (role === "risk_checker" && tone === "clear" && constraint === "checks") {
+        return {
+          type: "win",
+          label: "🏆 Best Ending: Safe Supplier Approved!",
+          points: 100,
+          response: "\"Before we start, please send your business registration, a test sample, and standard payment terms after delivery.\"",
+          note: "Great job! Checking documents, samples, and payment terms keeps new suppliers safe."
+        };
+      }
+      if (constraint === "upfront" || role === "kid") {
+        return {
+          type: "fail",
+          label: "⚠️ High Risk!",
+          points: 10,
+          response: "\"Here is all our money upfront! Hope the boxes show up someday!\"",
+          note: "Paying everything upfront to a brand-new supplier is risky. Check proof and samples first!"
+        };
+      }
+      return {
+        type: "funny",
+        label: "🧁 Secret Ending: Cupcake Check",
+        points: 45,
+        response: "\"Do you like blue frosting or pink frosting? Also, here are 12 cupcakes!\"",
+        note: "Tasty, but cupcakes won't check if a supplier is real!"
+      };
+    }
   }
 ];
 
@@ -246,14 +340,14 @@ function runPrompt() {
 }
 
 function getRankTitle(totalScore, foundCount) {
-  if (totalScore >= 300 && foundCount >= 6) {
-    return "👑 Chief Procurement Master! You know how to negotiate and explore every angle.";
+  if (totalScore >= 500 && foundCount >= 10) {
+    return "👑 Chief Procurement Master! Top deals and smart checks in every round.";
   }
-  if (totalScore >= 250) {
-    return "🏆 Senior Buyer Pro! Smart prompts and strong deals across all levels.";
+  if (totalScore >= 400) {
+    return "🏆 Senior Buyer Pro! Strong negotiation and great risk habits.";
   }
-  if (totalScore >= 120) {
-    return "💼 Rising Buyer! Solid start—replay to uncover more secret endings.";
+  if (totalScore >= 200) {
+    return "💼 Rising Buyer! Nice progress—replay to find more endings.";
   }
   return "🎲 Explorer! Try again to hit more Best Endings and boost your score.";
 }
